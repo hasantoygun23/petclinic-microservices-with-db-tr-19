@@ -85,6 +85,10 @@ services:
   api-gateway:
     image: petclinic-api-gateway:dev
     container_name: api-gateway
+<<<<<<< HEAD
+=======
+    restart: on-failure:3
+>>>>>>> feature/msp-8
     deploy:
       resources:
         limits:
