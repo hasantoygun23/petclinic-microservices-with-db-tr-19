@@ -1684,7 +1684,7 @@ git checkout feature/msp-17
 
 * Create a folder named `k8s` under `petclinic-microservices-with-db` folder for keeping the manifest files of the Petclinic App on the Kubernetes cluster.
 
-* Create a `docker-compose.yml` under `k8s` folder with the following content as to be used in conversion the k8s files.
+* Create a `compose.yml` under `k8s` folder with the following content as to be used in conversion the k8s files.
 
 ```yaml
 services:
@@ -1786,7 +1786,7 @@ kompose version
 * Install Helm [version 3+](https://github.com/helm/helm/releases) on Jenkins Server. [Introduction to Helm](https://helm.sh/docs/intro/). [Helm Installation](https://helm.sh/docs/intro/install/).
 
 ```bash
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+curl https://raw.githubusercontent.com/helm/helm/refs/heads/main/scripts/get-helm-3 | bash
 helm version
 ```
 
@@ -1803,10 +1803,10 @@ helm create petclinic_chart
 rm -r petclinic_chart/templates/*
 ```
   
-* Convert the `docker-compose.yml` into k8s/petclinic_chart/templates objects and save under `k8s/petclinic_chart` folder.
+* Convert the `compose.yml` into k8s/petclinic_chart/templates objects and save under `k8s/petclinic_chart` folder.
 
 ```bash
-kompose convert -f docker-compose.yml -o petclinic_chart/templates
+kompose convert -f compose.yml -o petclinic_chart/templates
 ```
 
 * Update deployment files with `init-containers` to launch microservices in sequence. See [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
@@ -1823,16 +1823,6 @@ kompose convert -f docker-compose.yml -o petclinic_chart/templates
           image: busybox
           command: ['sh', '-c', 'until nc -z discovery-server:8761; do echo waiting for discovery-server; sleep 2; done;']
 ``` 
-
-* Update `spec.rules.host` field of `api-gateway-ingress.yaml` file and add `ingressClassName: nginx` field under the `spec` field as below.
-
-```yaml
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: '{{ .Values.DNS_NAME }}'
-      ...
-```
 
 * Add `k8s/petclinic_chart/values-template.yaml` file as below.
 
@@ -1854,7 +1844,7 @@ DNS_NAME: "DNS Name of your application"
 
 * This pattern helps you to manage Helm v3 charts efficiently by integrating the Helm v3 repository into Amazon Simple Storage Service (Amazon S3) on the Amazon Web Services (AWS) Cloud. (https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/set-up-a-helm-v3-chart-repository-in-amazon-s3.html)
 
-* Create an ``S3 bucket`` for Helm charts. In the bucket, create a ``folder`` called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-<put-your-name>/stable/myapp as the target chart repository.
+* Create an ``S3 bucket`` for Helm charts. Create a ``folder`` in the bucket called ``stable/myapp``. The example in this pattern uses s3://petclinic-helm-charts-<put-your-name>/stable/myapp as the target chart repository.
 
 ```bash
 aws s3api create-bucket --bucket petclinic-helm-charts-<put-your-name> --region us-east-1
